@@ -42,8 +42,8 @@ export default function AdminOrdersPage() {
     console.log("AdminOrdersPage - User:", user, "Token:", token);
     if (!userLoading) {
       if (!user || user.role !== "admin") {
-        console.log("Redirecting to /admin/login: User not admin or missing");
-        router.push("/admin/login");
+        console.log("Redirecting to /auth/login: User not admin or missing");
+        router.push("/auth/login");
       } else {
         dispatch(fetchOrders()).catch((err) =>
           console.error("Fetch orders failed:", err)
