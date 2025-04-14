@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { Order, Car } from "../../../types";
+
+// Type guard to check if carId is a Car object
+const isCar = (carId: string | Car): carId is Car => {
+  return (carId as Car).brand !== undefined;
+};
 
 export default function OrdersPage() {
   const dispatch = useAppDispatch();
@@ -23,6 +29,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (user) {
+      console.log("OrdersPage - User:", user); // Debug
       dispatch(fetchOrders());
     }
   }, [dispatch, user]);
@@ -53,17 +60,23 @@ export default function OrdersPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Order ID</TableHead>
-                  <TableHead>Car ID</TableHead>
+                  <TableHead>Car</TableHead>
                   <TableHead>Total</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
+                {orders.map((order: Order) => (
                   <TableRow key={order._id}>
                     <TableCell>{order._id}</TableCell>
-                    <TableCell>{order.carId}</TableCell>
+                    <TableCell>
+                      {isCar(order.carId)
+                        ? `${order.carId.brand} ${order.carId.model}${
+                            order.carId.year ? ` (${order.carId.year})` : ""
+                          }`
+                        : `Car ID: ${order.carId}`}
+                    </TableCell>
                     <TableCell>${order.totalPrice.toLocaleString()}</TableCell>
                     <TableCell>{order.status}</TableCell>
                     <TableCell>

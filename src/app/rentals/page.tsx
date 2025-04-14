@@ -14,6 +14,12 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { Rental, Car } from "../../../types";
+
+// Type guard to check if carId is a Car object
+const isCar = (carId: string | Car): carId is Car => {
+  return (carId as Car).brand !== undefined;
+};
 
 export default function RentalsPage() {
   const dispatch = useAppDispatch();
@@ -23,6 +29,7 @@ export default function RentalsPage() {
 
   useEffect(() => {
     if (user) {
+      console.log("RentalsPage - User:", user); // Debug
       dispatch(fetchUserRentals());
     }
   }, [dispatch, user]);
@@ -53,7 +60,7 @@ export default function RentalsPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Rental ID</TableHead>
-                  <TableHead>Car ID</TableHead>
+                  <TableHead>Car</TableHead>
                   <TableHead>Start Date</TableHead>
                   <TableHead>End Date</TableHead>
                   <TableHead>Total</TableHead>
@@ -61,10 +68,16 @@ export default function RentalsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {rentals.map((rental) => (
+                {rentals.map((rental: Rental) => (
                   <TableRow key={rental._id}>
                     <TableCell>{rental._id}</TableCell>
-                    <TableCell>{rental.carId}</TableCell>
+                    <TableCell>
+                      {isCar(rental.carId)
+                        ? `${rental.carId.brand} ${rental.carId.model}${
+                            rental.carId.year ? ` (${rental.carId.year})` : ""
+                          }`
+                        : `Car ID: ${rental.carId}`}
+                    </TableCell>
                     <TableCell>
                       {new Date(rental.startDate).toLocaleDateString()}
                     </TableCell>
