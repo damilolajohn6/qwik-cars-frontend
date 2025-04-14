@@ -39,7 +39,7 @@ export interface CartItem {
 export interface Order {
     _id: string;
     userId: string;
-    carId: string | Car; // Allow populated Car data
+    carId: string | Car;
     totalPrice: number;
     quantity: number;
     status: "pending" | "completed" | "cancelled";
@@ -58,7 +58,7 @@ export interface Order {
 export interface Rental {
     _id: string;
     userId: string;
-    carId: string;
+    carId: string | Car; // Allow populated Car data
     startDate: string;
     endDate: string;
     totalPrice: number;

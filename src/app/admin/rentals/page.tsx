@@ -65,13 +65,13 @@ export default function AdminRentalsPage() {
   };
 
   const filteredRentals = rentals.filter((rental: Rental) => {
-    if (typeof rental.carId === "string") {
-      // If carId is a string, we can't filter by brand/model, so return true or fetch more data
-      return true; // Adjust this based on your backend logic
+    if (!searchTerm) return true; // Show all if no search term
+    if (isCar(rental.carId)) {
+      return `${rental.carId.brand} ${rental.carId.model}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     }
-    return `${rental.carId.brand} ${rental.carId.model}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    return rental.carId.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   if (userLoading || loading) {
@@ -99,7 +99,7 @@ export default function AdminRentalsPage() {
         <h2 className="text-2xl font-bold">Manage Rentals</h2>
         <input
           type="text"
-          placeholder="Search by car brand or model..."
+          placeholder="Search by car brand, model, or ID..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border p-2 rounded w-1/3"
@@ -122,11 +122,13 @@ export default function AdminRentalsPage() {
               <TableRow key={rental._id}>
                 <TableCell>
                   {isCar(rental.carId)
-                    ? `${rental.carId.brand} ${rental.carId.model} (${rental.carId.year})`
-                    : rental.carId}
+                    ? `${rental.carId.brand} ${rental.carId.model}${
+                        rental.carId.year ? ` (${rental.carId.year})` : ""
+                      }`
+                    : `Car ID: ${rental.carId}`}
                 </TableCell>
                 <TableCell>{rental.bookedHours}</TableCell>
-                <TableCell>${rental.totalPrice}</TableCell>
+                <TableCell>${rental.totalPrice.toLocaleString()}</TableCell>
                 <TableCell>
                   <Badge
                     variant={
