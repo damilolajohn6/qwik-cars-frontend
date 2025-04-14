@@ -42,6 +42,7 @@ export interface Order {
     carId: string;
     totalPrice: number;
     quantity: number;
+    brand: string;
     status: 'pending' | 'completed' | 'cancelled';
     paymentMethod: 'credit_card' | 'bank_transfer' | 'cash';
     deliveryAddress?: {
