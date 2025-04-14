@@ -7,8 +7,8 @@ import {
   fetchOrders,
   updateOrderStatus,
   deleteOrder,
-} from "../../../redux/slices/orderSlice"; // Assuming these exist
-import { Order, Car } from "../../../../types"; // Import Order and Car types
+} from "../../../redux/slices/orderSlice";
+import { Order, Car } from "../../../../types";
 import { AppDispatch } from "../../../redux/store";
 import { Button } from "@/components/ui/button";
 import {
@@ -65,12 +65,13 @@ export default function AdminOrdersPage() {
   };
 
   const filteredOrders = orders.filter((order: Order) => {
-    if (typeof order.carId === "string") {
-      return true; // No filtering by brand/model if carId is a string
+    if (!searchTerm) return true; // Show all if no search term
+    if (isCar(order.carId)) {
+      return `${order.carId.brand} ${order.carId.model}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
     }
-    return `${order.carId.brand} ${order.carId.model}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    return order.carId.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   if (userLoading || loading) {
@@ -98,7 +99,7 @@ export default function AdminOrdersPage() {
         <h2 className="text-2xl font-bold">Manage Orders</h2>
         <input
           type="text"
-          placeholder="Search by car brand or model..."
+          placeholder="Search by car brand, model, or ID..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border p-2 rounded w-1/3"
@@ -121,11 +122,13 @@ export default function AdminOrdersPage() {
               <TableRow key={order._id}>
                 <TableCell>
                   {isCar(order.carId)
-                    ? `${order.carId.brand} ${order.carId.model} (${order.carId.year})`
-                    : order.carId}
+                    ? `${order.carId.brand} ${order.carId.model}${
+                        order.carId.year ? ` (${order.carId.year})` : ""
+                      }`
+                    : `Car ID: ${order.carId}`}
                 </TableCell>
                 <TableCell>{order.quantity}</TableCell>
-                <TableCell>${order.totalPrice}</TableCell>
+                <TableCell>${order.totalPrice.toLocaleString()}</TableCell>
                 <TableCell>
                   <Badge
                     variant={

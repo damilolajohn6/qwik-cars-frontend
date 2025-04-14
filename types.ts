@@ -3,7 +3,7 @@ export interface User {
     name: string;
     email: string;
     phone: string;
-    role: 'customer' | 'admin';
+    role: "customer" | "admin";
 }
 
 export interface Car {
@@ -15,15 +15,15 @@ export interface Car {
     price: number;
     retailPrice?: number;
     rentalPricePerHour?: number;
-    category: 'sale' | 'rent' | 'both';
-    status: 'available' | 'sold' | 'rented' | 'unavailable';
+    category: "sale" | "rent" | "both";
+    status: "available" | "sold" | "rented" | "unavailable";
     quantity: number;
     engineCC?: number;
     maxPower?: string;
     airbags?: number;
     rearCamera?: boolean;
     seats?: number;
-    bookedHours?: number; // Optional for backward compatibility
+    bookedHours?: number;
     images: { url: string; publicId: string }[];
     createdAt: string;
     updatedAt: string;
@@ -39,12 +39,11 @@ export interface CartItem {
 export interface Order {
     _id: string;
     userId: string;
-    carId: string;
+    carId: string | Car; // Allow populated Car data
     totalPrice: number;
     quantity: number;
-    brand: string;
-    status: 'pending' | 'completed' | 'cancelled';
-    paymentMethod: 'credit_card' | 'bank_transfer' | 'cash';
+    status: "pending" | "completed" | "cancelled";
+    paymentMethod: "credit_card" | "bank_transfer" | "cash";
     deliveryAddress?: {
         street?: string;
         city?: string;
@@ -64,8 +63,8 @@ export interface Rental {
     endDate: string;
     totalPrice: number;
     bookedHours: number;
-    status: 'active' | 'completed' | 'cancelled';
-    paymentMethod: 'credit_card' | 'bank_transfer' | 'cash';
+    status: "active" | "completed" | "cancelled";
+    paymentMethod: "credit_card" | "bank_transfer" | "cash";
     createdAt: string;
     updatedAt: string;
 }
