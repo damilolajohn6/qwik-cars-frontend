@@ -46,7 +46,7 @@ export default function FeaturedCars() {
   }
 
   return (
-    <section className="py-12">
+    <section className="py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-8 text-center">Featured Cars</h2>
         {cars.length > 0 ? (
@@ -73,7 +73,7 @@ export default function FeaturedCars() {
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild variant="outline" className="w-full">
+                  <Button asChild variant="outline" className="w-full bg-blue-500 hover:bg-blue-800 text-white font-medium">
                     <Link href={`/cars/${car._id}`}>View Details</Link>
                   </Button>
                 </CardFooter>
@@ -86,7 +86,7 @@ export default function FeaturedCars() {
           </p>
         )}
         <div className="text-center mt-8">
-          <Button asChild>
+          <Button asChild className="bg-blue-600 text-white hover:bg-blue-900">
             <Link href="/cars">Browse All Cars</Link>
           </Button>
         </div>

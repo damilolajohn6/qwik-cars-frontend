@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function HomeAboutUs() {
   return (
-    <section className="py-16 px-4 md:px-12 bg-white text-center">
+    <section className="py-16 px-4 md:px-12 bg-gray-50 text-center">
       <h2 className="text-3xl md:text-4xl font-bold mb-10">About Us</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 items-center justify-center">
         {/* Left Image */}

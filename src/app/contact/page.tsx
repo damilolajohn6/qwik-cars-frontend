@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const ContactUs = () => {
   return (
-    <div className="">
+    <div className="bg-gray-50">
       <section className="relative h-[300px] w-full overflow-hidden">
         {/* Background Image */}
         <Image
