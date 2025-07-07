@@ -68,7 +68,7 @@ export default function Header() {
             Home
           </Link>
           <Link
-            href="/cars?type=rent"
+            href="/rent"
             className="text-gray-600 hover:text-blue-600"
           >
             Rent

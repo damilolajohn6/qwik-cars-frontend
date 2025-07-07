@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SearchFilter = ({ label }: { label: string }) => (
   <div className="bg-white border border-gray-200 rounded-md px-4 py-2 flex items-center justify-between flex-1 min-w-[150px]">
@@ -13,15 +15,19 @@ const SearchFilter = ({ label }: { label: string }) => (
 
 export default function Hero() {
 
+   const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState("");
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log("Searching...");
+    if (searchTerm.trim()) {
+      router.push(`/cars?search=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm("");
+    }
   };
 
   return (
     <section className="bg-white">
-
       <div className="container mx-auto px-4 pt-16 pb-8 text-center">
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900">
           Find Your Next Car
@@ -47,10 +53,13 @@ export default function Hero() {
       <div className="bg-gray-100 py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-5">Quick Search</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-5">
+              Quick Search
+            </h2>
+
             <form
               onSubmit={handleSearch}
-              className="flex flex-wrap gap-4 items-center"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
               <SearchFilter label="Make" />
               <SearchFilter label="Model" />
@@ -58,12 +67,15 @@ export default function Hero() {
               <SearchFilter label="Fuel Type" />
               <SearchFilter label="Price Range" />
               <SearchFilter label="Year Made" />
-              <Button
-                type="submit"
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-10 rounded-md h-full"
-              >
-                Search
-              </Button>
+
+              <div className="sm:col-span-2 lg:col-span-3 flex justify-start">
+                <Button
+                  type="submit"
+                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-10 rounded-md w-full sm:w-auto"
+                >
+                  Search
+                </Button>
+              </div>
             </form>
           </div>
         </div>

@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
-import { fetchCarById, setSelectedCar } from "../../../redux/slices/carSlice";
-import { addToCart } from "../../../redux/slices/cartSlice";
-import { Car } from "../../../../types";
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  fetchCarById,
+  setSelectedCar,
+  fetchCars,
+} from "@/redux/slices/carSlice";
+import { addToCart } from "@/redux/slices/cartSlice";
+import { Car as CarType } from "../../../../types";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ShoppingCart, Car as CarIcon } from "lucide-react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Carousel,
   CarouselContent,
@@ -18,30 +20,30 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import RentalForm from "../../../components/RentalForm";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import RentalForm from "@/components/RentalForm";
+import { ShoppingCart, CalendarCheck, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CarDetailsPage() {
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
-  const { selectedCar, loading, error } = useAppSelector((state) => state.cars);
+  const { selectedCar, loading, error, cars } = useAppSelector(
+    (state) => state.cars
+  );
+
+  const [activeTab, setActiveTab] = useState<"overview" | "specs">("overview");
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchCarById(id as string));
-    }
+    if (id) dispatch(fetchCarById(id as string));
+    dispatch(fetchCars({ limit: 4 }));
     return () => {
       dispatch(setSelectedCar(null));
     };
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (selectedCar) {
-      console.log("Selected Car Images:", selectedCar.images); // Debug
-    }
-  }, [selectedCar]);
-
-  const handleAddToCart = (car: Car) => {
+  const handleAddToCart = (car: CarType) => {
     dispatch(addToCart(car));
     router.push("/cart");
   };
@@ -56,52 +58,64 @@ export default function CarDetailsPage() {
 
   if (error || !selectedCar) {
     return (
-      <div className="container mx-auto px-4 py-8 text-red-500">
-        {error || "Car not found"}{" "}
-        <Button onClick={() => router.push("/cars")}>Back to Cars</Button>
+      <div className="container mx-auto py-10 text-center text-red-500">
+        {error || "Car not found"}
+        <Button variant="link" onClick={() => router.push("/cars")}>
+          ← Back to Cars
+        </Button>
       </div>
     );
   }
 
+  const {
+    brand,
+    model,
+    year,
+    price,
+    rentalPricePerHour,
+    category,
+    color,
+    status,
+    quantity,
+    engineCC,
+    maxPower,
+    airbags,
+    rearCamera,
+    seats,
+    images,
+  } = selectedCar;
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Button
-        variant="outline"
-        className="mb-6"
-        onClick={() => router.push("/cars")}
-      >
+    <div className="container mx-auto px-4 py-10">
+      <Button variant="outline" onClick={() => router.back()}>
         ← Back to Cars
       </Button>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Image Carousel */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
         <Card>
           <CardHeader>
             <Carousel>
               <CarouselContent>
-                {Array.isArray(selectedCar.images) &&
-                selectedCar.images.length > 0 ? (
-                  selectedCar.images.map((img, index) => (
-                    <CarouselItem
-                      key={img.publicId || `image-${index}`}
-                      data-testid={`carousel-item-${index}`}
-                    >
+                {images?.length ? (
+                  images.map((img, i) => (
+                    <CarouselItem key={img.publicId || i}>
                       <Image
                         src={img.url || "/images/placeholder.jpg"}
-                        alt={`${selectedCar.brand} ${selectedCar.model}`}
-                        width={600}
-                        height={400}
-                        className="w-full h-96 object-cover rounded-md"
+                        alt={`Car ${i}`}
+                        width={700}
+                        height={450}
+                        className="rounded-md w-full h-72 sm:h-96 object-cover"
                       />
                     </CarouselItem>
                   ))
                 ) : (
-                  <CarouselItem key="placeholder">
+                  <CarouselItem>
                     <Image
                       src="/images/placeholder.jpg"
                       alt="Placeholder"
-                      width={600}
-                      height={400}
-                      className="w-full h-96 object-cover rounded-md"
+                      width={700}
+                      height={450}
+                      className="rounded-md w-full h-72 sm:h-96 object-cover"
                     />
                   </CarouselItem>
                 )}
@@ -112,61 +126,92 @@ export default function CarDetailsPage() {
           </CardHeader>
         </Card>
 
-        {/* Details */}
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
-            <CardTitle>
-              {selectedCar.brand} {selectedCar.model} ({selectedCar.year})
+            <CardTitle className="text-2xl font-semibold">
+              {brand} {model} ({year})
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-2xl font-bold">
-              {selectedCar.category === "sale" || selectedCar.category === "both"
-                ? `$${selectedCar.price.toLocaleString()}`
-                : `$${selectedCar.rentalPricePerHour}/hour`}
-            </p>
-            <p className="text-gray-600">Status: {selectedCar.status}</p>
-            <p className="text-gray-600">Color: {selectedCar.color || "N/A"}</p>
-            <p className="text-gray-600">
-              Quantity Available: {selectedCar.quantity}
-            </p>
-            {selectedCar.engineCC && (
-              <p className="text-gray-600">Engine: {selectedCar.engineCC} CC</p>
-            )}
-            {selectedCar.maxPower && (
-              <p className="text-gray-600">Power: {selectedCar.maxPower}</p>
-            )}
-            {selectedCar.airbags && (
-              <p className="text-gray-600">Airbags: {selectedCar.airbags}</p>
-            )}
-            <p className="text-gray-600">
-              Rear Camera: {selectedCar.rearCamera ? "Yes" : "No"}
-            </p>
-            {selectedCar.seats && (
-              <p className="text-gray-600">Seats: {selectedCar.seats}</p>
-            )}
+          <CardContent>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <button
+                onClick={() => setActiveTab("overview")}
+                className={`px-4 py-2 text-sm rounded transition ${
+                  activeTab === "overview"
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-black"
+                }`}
+              >
+                Overview
+              </button>
+              <button
+                onClick={() => setActiveTab("specs")}
+                className={`px-4 py-2 text-sm rounded transition ${
+                  activeTab === "specs"
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-black"
+                }`}
+              >
+                Specifications
+              </button>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === "overview" && (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-2"
+                >
+                  <p className="text-lg font-bold">
+                    {category === "sale" || category === "both"
+                      ? `$${price.toLocaleString()}`
+                      : `$${rentalPricePerHour}/hr`}
+                  </p>
+                  <p className="text-gray-600">Status: {status}</p>
+                  <p className="text-gray-600">Color: {color}</p>
+                  <p className="text-gray-600">Available: {quantity}</p>
+                </motion.div>
+              )}
+              {activeTab === "specs" && (
+                <motion.div
+                  key="specs"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700 text-sm"
+                >
+                  {engineCC && <p>Engine: {engineCC}cc</p>}
+                  {maxPower && <p>Max Power: {maxPower}</p>}
+                  {airbags && <p>Airbags: {airbags}</p>}
+                  <p>Rear Camera: {rearCamera ? "Yes" : "No"}</p>
+                  {seats && <p>Seats: {seats}</p>}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
-          <CardContent className="flex space-x-4">
-            {(selectedCar.category === "sale" ||
-              selectedCar.category === "both") && (
+
+          <CardContent className="flex flex-wrap gap-4 mt-auto">
+            {(category === "sale" || category === "both") && (
               <Button
                 onClick={() => handleAddToCart(selectedCar)}
-                disabled={selectedCar.status !== "available"}
+                disabled={status !== "available"}
               >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Add to Cart
+                <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
               </Button>
             )}
-            {(selectedCar.category === "rent" ||
-              selectedCar.category === "both") && (
+            {(category === "rent" || category === "both") && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button disabled={selectedCar.status !== "available"}>
-                    <CarIcon className="w-4 h-4 mr-2" />
-                    Rent Now
+                  <Button disabled={status !== "available"}>
+                    <CalendarCheck className="w-4 h-4 mr-2" /> Rent Now
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="w-full max-w-lg sm:max-w-xl p-4 overflow-y-auto max-h-[90vh]">
                   <RentalForm car={selectedCar} />
                 </DialogContent>
               </Dialog>
@@ -175,24 +220,39 @@ export default function CarDetailsPage() {
         </Card>
       </div>
 
-      {/* Reviews Section */}
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Customer Reviews</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-500">
-            No reviews yet. Be the first to share your experience!
-          </p>
-          <Button
-            variant="outline"
-            className="mt-4"
-            disabled // Enable when review system is implemented
-          >
-            Write a Review
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Recommendations */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold mb-4">Related Cars</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cars
+            .filter((car) => car._id !== selectedCar._id)
+            .slice(0, 4)
+            .map((car) => (
+              <Card key={car._id} className="hover:shadow-md transition">
+                <Image
+                  src={car.images[0]?.url || "/images/placeholder.jpg"}
+                  alt={car.model}
+                  width={400}
+                  height={300}
+                  className="w-full h-48 object-cover rounded-t"
+                />
+                <CardContent className="p-4">
+                  <p className="text-lg font-semibold">
+                    {car.brand} {car.model}
+                  </p>
+                  <p className="text-sm text-gray-500">{car.year}</p>
+                  <Button
+                    onClick={() => router.push(`/cars/${car._id}`)}
+                    variant="link"
+                    className="text-blue-600 p-0"
+                  >
+                    View
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { createRental } from "../redux/slices/rentalSlice";
 import { Car } from "../../types";
@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
 import { Calendar } from "@/components/ui/calendar";
-import { format, addHours } from "date-fns";
+import { format, addHours, isBefore, isAfter, isEqual } from "date-fns";
+import axios from "axios";
 
 interface RentalFormProps {
-  car: Car
+  car: Car;
 }
 
 interface CreateRentalData {
@@ -26,6 +27,11 @@ interface CreateRentalData {
   startDate: string;
   endDate: string;
   paymentMethod: "credit_card" | "bank_transfer" | "cash";
+}
+
+interface BookingPeriod {
+  startDate: string;
+  endDate: string;
 }
 
 export default function RentalForm({ car }: RentalFormProps) {
@@ -37,8 +43,34 @@ export default function RentalForm({ car }: RentalFormProps) {
   const [paymentMethod, setPaymentMethod] = useState<
     "credit_card" | "bank_transfer" | "cash"
   >("credit_card");
+  const [bookedRanges, setBookedRanges] = useState<BookingPeriod[]>([]);
 
   const endDate = addHours(startDate, hours);
+
+  useEffect(() => {
+    const fetchBookedPeriods = async () => {
+      try {
+        const res = await axios.get(`/api/rentals?carId=${car._id}`);
+        setBookedRanges(res.data);
+      } catch (err) {
+        console.error("Failed to fetch bookings", err);
+      }
+    };
+
+    fetchBookedPeriods();
+  }, [car._id]);
+
+  const isUnavailable = (date: Date): boolean => {
+    return bookedRanges.some(({ startDate: s, endDate: e }) => {
+      const start = new Date(s);
+      const end = new Date(e);
+      return (
+        isEqual(date, start) ||
+        isEqual(date, end) ||
+        (isAfter(date, start) && isBefore(date, end))
+      );
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,6 +107,7 @@ export default function RentalForm({ car }: RentalFormProps) {
           mode="single"
           selected={startDate}
           onSelect={(date) => date && setStartDate(date)}
+          disabled={(date) => isUnavailable(date)}
           className="rounded-md border"
         />
       </div>
@@ -96,9 +129,7 @@ export default function RentalForm({ car }: RentalFormProps) {
       </div>
       <div>
         <label className="block text-sm font-medium mb-1">Total Price</label>
-        <p className="text-lg font-semibold">
-          ${totalPrice.toLocaleString()}
-        </p>
+        <p className="text-lg font-semibold">${totalPrice.toLocaleString()}</p>
       </div>
       <div>
         <label className="block text-sm font-medium mb-1">Payment Method</label>

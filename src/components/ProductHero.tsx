@@ -1,9 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
+import { Button } from "./ui/button";
+
+const SearchFilter = ({ label }: { label: string }) => (
+  <div className="bg-white border border-gray-200 rounded-md px-4 py-2 flex items-center justify-between w-full min-w-[140px]">
+    <span className="text-gray-600 text-sm">{label}</span>
+    <ChevronDown className="h-5 w-5 text-gray-400" />
+  </div>
+);
 
 export default function ProductHero() {
   const router = useRouter();
@@ -13,52 +21,68 @@ export default function ProductHero() {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/cars?search=${encodeURIComponent(searchTerm)}`);
-      setSearchTerm(""); // Clear search after submission
+      setSearchTerm("");
     }
   };
+
   return (
-    <section className="relative h-[90vh] flex items-center px-12">
-      {/* Background Image */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/hero.jpg"
-          alt="Blue BMW car"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-      <div className="absolute inset-0 bg-black/40" />
-
-      {/* Content */}
-      <div className="text-white max-w-4xl text-center px-4 relative">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-          We Sell Best Car’s You’ll Fall in Love With—No Compromises.
-        </h1>
-        <p className="mt-4 text-lg sm:text-xl text-gray-200">
-          Your trusted partner in buying, selling, and renting quality vehicles.
-        </p>
-
-        <div className="mt-6">
-          <Button size="lg" className="text-lg px-8 py-5 rounded-xl">
-            Explore
-          </Button>
+    <>
+      {/* Hero Section */}
+      <section className="relative h-[80vh] sm:h-[90vh] flex items-center justify-center text-center px-4 sm:px-8">
+        {/* Background Image */}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/hero.jpg"
+            alt="Blue BMW car"
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
+        <div className="absolute inset-0 bg-black/50" />
 
-        {/* Search Bar */}
-        <div className="mt-10 flex items-center justify-center w-full max-w-3xl mx-auto bg-white rounded-full shadow-lg overflow-hidden">
-          <form onSubmit={handleSearch} className="md:flex items-center w-full">
-            <input
-              type="text"
-              placeholder="Search by Made, Model, Price"
-              className="flex-1 px-6 py-4 text-gray-700 outline-none rounded-l-full"
-            />
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-r-full">
-              Search
-            </button>
+        {/* Hero Content */}
+        <div className="text-white relative max-w-3xl mx-auto">
+          <div className="">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+              Rent a vehicle
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-gray-200">
+              Find the best deals on high-quality vehicles
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Search Section */}
+      <section className="bg-gray-100 py-10 px-4 sm:px-6 md:px-12 lg:px-20">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-5 text-center sm:text-left">
+            Quick Search
+          </h2>
+
+          <form
+            onSubmit={handleSearch}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
+            <SearchFilter label="Make" />
+            <SearchFilter label="Model" />
+            <SearchFilter label="Body Type" />
+            <SearchFilter label="Fuel Type" />
+            <SearchFilter label="Price Range" />
+            <SearchFilter label="Year Made" />
+
+            <div className="sm:col-span-2 lg:col-span-3 flex justify-start">
+              <Button
+                type="submit"
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-10 rounded-md w-full sm:w-auto"
+              >
+                Search
+              </Button>
+            </div>
           </form>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
