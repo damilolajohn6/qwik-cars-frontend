@@ -10,6 +10,7 @@ import { Car } from "../../../types";
 import ProductHero from "@/components/ProductHero";
 import CategoriesServices from "@/components/CategoriesServices";
 import CtaCards from "@/components/CtaCards";
+import BrowseByType from "@/components/BrowseByTypes";
 
 // Helper function to format Naira currency
 const formatNaira = (price: number) => {
@@ -68,65 +69,71 @@ export default function RentedCarsPage() {
   const { cars, loading, error } = useAppSelector((state) => state.cars);
 
   useEffect(() => {
-    // Dispatch the fetchCars action with the 'rent' category
     dispatch(
       fetchCars({
-        category: "rent",
+        status: "available",
+        limit: 12,
       })
     );
   }, [dispatch]);
 
   return (
-    <main className="bg-white">
+    <div className="">
       <ProductHero />
-      <CategoriesServices />
-      <div className="">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900">Cars for Rent</h1>
-            <p className="mt-2 text-lg text-gray-600">
-              Choose from our premium selection of vehicles available for hourly
-              rental.
-            </p>
+
+      <main className="bg-white">
+        <CategoriesServices />
+        <div className="">
+          <div className="container mx-auto px-4 py-16">
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold text-gray-900">
+                Cars for Rent
+              </h1>
+              <p className="mt-2 text-lg text-gray-600">
+                Choose from our premium selection of vehicles available for
+                hourly rental.
+              </p>
+            </div>
+
+            {loading && (
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+              </div>
+            )}
+
+            {error && (
+              <div className="text-center text-red-500 py-20">
+                <p>Failed to load rental cars.</p>
+                <p className="text-sm">{error}</p>
+              </div>
+            )}
+
+            {!loading && !error && (
+              <>
+                {cars.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {cars.map((car) => (
+                      <RentalCarCard key={car._id} car={car} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20">
+                    <h3 className="text-2xl font-semibold text-gray-800">
+                      No Cars Found
+                    </h3>
+                    <p className="mt-2 text-gray-500">
+                      There are currently no cars available for rent. Please
+                      check back later.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
-
-          {loading && (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-            </div>
-          )}
-
-          {error && (
-            <div className="text-center text-red-500 py-20">
-              <p>Failed to load rental cars.</p>
-              <p className="text-sm">{error}</p>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <>
-              {cars.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                  {cars.map((car) => (
-                    <RentalCarCard key={car._id} car={car} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-20">
-                  <h3 className="text-2xl font-semibold text-gray-800">
-                    No Cars Found
-                  </h3>
-                  <p className="mt-2 text-gray-500">
-                    There are currently no cars available for rent. Please check
-                    back later.
-                  </p>
-                </div>
-              )}
-            </>
-          )}
         </div>
-      </div>
-      <CtaCards />
-    </main>
+        <CtaCards />
+      </main>
+      <BrowseByType />
+    </div>
   );
 }
