@@ -1,5 +1,6 @@
 "use client";
-import CtaCards from "@/components/CtaCards";
+import CompareModels from "@/components/CompareModels";
+// import CtaCards from "@/components/CtaCards";
 import FeaturedCars from "@/components/FeaturedCars";
 import HomeAboutUs from "@/components/HomeAboutUs";
 import Hero from "@/components/HomeHero";
@@ -11,8 +12,9 @@ export default function Home() {
     <div className="">
       <Hero />
       <FeaturedCars />
-      <CtaCards />
+      {/* <CtaCards /> */}
       <HomeAboutUs />
+      <CompareModels />
       <Testimonial />
     </div>
   );
