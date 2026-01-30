@@ -18,7 +18,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-3xl text-red-500">★</span>
-              <span className="text-xl font-semibold">Didi Global Autos</span>
+              <span className="text-xl font-semibold">HKA</span>
             </div>
             <p className="text-gray-300 mb-4">
               For more information or inquiry, contact us on any of our social
@@ -55,7 +55,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Contact</h3>
-            {/* <p className="text-gray-300">
+            <p className="text-gray-300">
               Henry King Autos
               <br />
               Satraco Gate
@@ -63,12 +63,12 @@ export default function Footer() {
               Gwarinpa, Abuja.
               <br />
               Nigeria.
-            </p> */}
+            </p>
             <p className="text-gray-300 mt-2 flex items-center gap-2">
-              <FaPhone /> Phone: +234 8138151437
+              <FaPhone /> Phone: +234 903-167-0254
             </p>
             <p className="text-gray-300 mt-1 flex items-center gap-2">
-              <MdEmail /> Email: contact@didiglobalautos.com
+              <MdEmail /> Email: HenryKingAutos.com
             </p>
           </div>
 
@@ -106,7 +106,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 text-center text-gray-500 text-xs">
-          &copy; {new Date().getFullYear()} Didi Global Autos. All rights reserved.
+          &copy; {new Date().getFullYear()} Henry King Autos. All rights reserved.
         </div>
       </div>
     </footer>

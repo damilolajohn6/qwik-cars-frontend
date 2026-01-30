@@ -53,7 +53,7 @@ const ContactUs = () => {
               href="tel:+2348079056834"
               className="text-blue-600 font-medium mt-1"
             >
-              +234 8138151437
+              +234 807-905-6834
             </a>
             <p className="text-sm text-gray-500 mt-1">
               Available 9 AM - 6 PM (Mon-Sat)
@@ -65,10 +65,10 @@ const ContactUs = () => {
             <Mail className="text-gray-700 w-6 h-6 mb-2" />
             <h3 className="text-lg font-semibold">Email Us:</h3>
             <a
-              href="mailto:contact@didiglobalautos.com"
+              href="mailto:support@justclothing.com"
               className="text-blue-600 font-medium mt-1"
             >
-              contact@didiglobalautos.com
+              Justclothing.com
             </a>
             <p className="text-sm text-gray-500 mt-1">
               Replies within 24 hours

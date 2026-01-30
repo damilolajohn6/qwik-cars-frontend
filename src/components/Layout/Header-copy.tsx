@@ -59,7 +59,7 @@ export default function Header() {
             priority
           /> */}
           <span className="text-red-600 text-xl">★</span>
-          <span className="text-blue-600 font-bold text-lg">DIDI GLOBAL AUTOS</span>
+          <span className="text-blue-600 font-bold text-lg">HKA</span>
         </Link>
 
         {/* Desktop Navigation */}
