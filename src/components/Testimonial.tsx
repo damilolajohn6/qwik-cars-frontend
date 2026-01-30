@@ -9,7 +9,7 @@ const testimonials = [
   {
     title: "Reliable and Efficient",
     message:
-      "Henry King Autos made my car-buying experience smooth and enjoyable. The staff was knowledgeable and truly cared about helping me find the right vehicle. Highly recommend!",
+      "Didi Global Autos made my car-buying experience smooth and enjoyable. The staff was knowledgeable and truly cared about helping me find the right vehicle. Highly recommend!",
     name: "Alice Monroe",
     role: "Real Estate Agent",
     image: "/avatar.jpg",

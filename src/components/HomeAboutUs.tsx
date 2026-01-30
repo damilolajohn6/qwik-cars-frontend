@@ -25,6 +25,18 @@ export default function HomeAboutUs() {
         {/* Center Text */}
         <div className="bg-[#F1F1FA] rounded-xl p-6 shadow-md text-left">
           <p className="text-gray-700 mb-4">
+            Welcome to Didi Global Autos, your trusted source for all things
+            automotive. Whether you are a first-time buyer, looking to sell or
+            someone just looking to rent a vehicle, we&apos;ve got you covered.
+          </p>
+          <p className="text-gray-700">
+            At Didi Global Autos, we are passionate about cars and our goal is to
+            provide high-quality cars to ensure your automotive needs are met
+            with ease and confidence.
+          </p>
+        </div>
+        {/* <div className="bg-[#F1F1FA] rounded-xl p-6 shadow-md text-left">
+          <p className="text-gray-700 mb-4">
             Welcome to Henry King Autos, your trusted source for all things
             automotive. Whether you are a first-time buyer, looking to sell or
             someone just looking to rent a vehicle, we&apos;ve got you covered.
@@ -34,7 +46,7 @@ export default function HomeAboutUs() {
             provide high-quality cars to ensure your automotive needs are met
             with ease and confidence.
           </p>
-        </div>
+        </div> */}
 
         {/* Right Image */}
         <div className="bg-red-600 p-2 rounded-2xl shadow-md">
